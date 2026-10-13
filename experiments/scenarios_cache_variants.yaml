@@ -1,0 +1,11 @@
+# Cache robustness check, not a grading tape.
+scenarios:
+  VC1_faq_outage:
+    duration_s: 720
+    faq: {share: 0.6, personal_share: 0.25}
+    content_updates: [{t: 100, source: policy/shipping}]
+    effects: [{start: 200, end: 320, outage: refuse}]
+    prompt_deploys: [{t: 380, version: v2}]
+    silent_updates: [{t: 500, source: policy/returns}]
+    restore_at: 320
+    checks: {wrong_answers_max: 0, outdated_answers_max: 15, faq_availability_min: 0.93, cache_hit_ratio_min: 0.5}

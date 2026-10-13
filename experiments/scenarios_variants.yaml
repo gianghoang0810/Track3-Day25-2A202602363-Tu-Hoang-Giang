@@ -1,0 +1,42 @@
+# Variants are local robustness checks; grading uses its own hidden tapes.
+scenarios:
+  V1_rate_limit_spike:
+    duration_s: 480
+    traffic: [{start: 60, end: 240, multiplier: 2.5}]
+    effects: [{provider: alpha, start: 0, end: 480, rate_limit_rps: 10}]
+    restore_at: 240
+    checks: {availability_min: 0.98, retry_after_violations_max: 0, amplification_max: 1.6}
+  V2_overload_storm:
+    duration_s: 600
+    effects: [{provider: alpha, start: 200, end: 420, capacity_factor: 0.15}]
+    restore_at: 420
+    checks: {availability_min: 0.95, amplification_max: 1.6, recovery_s_max: 30, primary_share_after_restore_min: 0.8}
+  V3_brownout:
+    duration_s: 480
+    effects: [{provider: alpha, start: 60, end: 300, error_rate: 0.40}]
+    restore_at: 300
+    checks: {availability_min: 0.98, retry_ratio_max: 0.10, amplification_max: 1.6}
+  V4a_slow_region_mild:
+    duration_s: 540
+    effects: [{provider: alpha, start: 90, end: 330, extra_latency_s: 3.5}]
+    restore_at: 330
+    checks: {availability_min: 0.97, latency_p95_s_max: 10, primary_share_after_restore_min: 0.8}
+  V4b_slow_region_severe:
+    duration_s: 570
+    effects: [{provider: alpha, start: 150, end: 450, extra_latency_s: 8.0}]
+    restore_at: 450
+    checks: {availability_min: 0.97, latency_p95_s_max: 10, primary_share_after_restore_min: 0.8}
+  V5_bad_deploy_then_quota:
+    duration_s: 540
+    malformed: [{start: 100, end: 200, rate: 0.6}]
+    primary_only: [{start: 100, end: 200}]
+    effects: [{family: A-large, start: 330, end: 540, quota_exhausted: true}]
+    checks: {client_error_retries_max: 0, unneeded_failovers_max: 10, availability_min: 0.78}
+  V6_provider_outage:
+    duration_s: 600
+    effects:
+      - {provider: alpha, start: 200, end: 470, outage: refuse}
+      - {provider: alpha-eu, start: 200, end: 470, outage: hang}
+      - {provider: beta, start: 200, end: 470, rate_limit_rps: 9}
+    restore_at: 470
+    checks: {availability_min: 0.95, incompatible_routes_max: 0, primary_share_after_restore_min: 0.8}
