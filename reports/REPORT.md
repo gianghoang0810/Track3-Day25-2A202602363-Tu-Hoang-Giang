@@ -1,6 +1,6 @@
 # Lab 25B — Report
 
-**Họ tên / nhóm:** Từ Hoàng Giang — 2A202602363  **Commit:** (điền sau khi commit)  **Điểm tự động (`make grade`):** 84.0 / 88
+**Họ tên / nhóm:** Từ Hoàng Giang — 2A202602363  **Commit:** 20e4947  **Điểm tự động (`make grade`):** 84.0 / 88
 
 ## 1. Kết quả Game Day (naive vs của bạn)
 
